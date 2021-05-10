@@ -23,11 +23,11 @@
 * Para executar o sistema:        
   - Primeiro, instale as dependências:   
 	
-				> pip install -r requirements.txt
+		pip install -r requirements.txt
 
   - Depois execute o sistema:  
   
-		> python main.py    
+		python main.py    
 		
 * Possíveis parametros:  
 
@@ -39,6 +39,7 @@
 | --diretorio_arquivos | ./download 		  | Pasta de destino dos arquivos de download e/ou onde se localiza os arquivos da RFB 														|
 | --database_url 	   | sqlite:///db.sqlite3 | URL de conexão com o SGBD no formato exigido pela biblioteca SQLAchemy																	|
 
-      OBS: 
-      - no banco SQLite ocorreu erro ao executar o mesmo em threads, no postgreSQL funcionou corretamente o processo.
-      - Processo testado apenas no SQLite e no PostgreSQL
+**OBS2:** 
+  - No banco SQLite ocorreu erro ao executar o mesmo em threads, no postgreSQL funcionou corretamente o processo.
+  - Processo testado apenas no SQLite e no PostgreSQL
+  - Página com os layouts e arquivo para baixar: https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj
