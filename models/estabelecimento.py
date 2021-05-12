@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Estabelecimento(Base):
-    __tablename__ = 'estabelecimento'
+    __tablename__ = 'estabelecimentos'
 
     id = Column(Integer, primary_key=True)
 

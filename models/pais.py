@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Pais(Base):
-    __tablename__ = 'pais'
+    __tablename__ = 'paises'
 
     # CÓDIGO DO PAÍS
     codigo = Column(String, primary_key=True)

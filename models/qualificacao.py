@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Qualificacao(Base):
-    __tablename__ = 'qualificacao'
+    __tablename__ = 'qualificacoes'
 
     # CÓDIGO DA QUALIFICAÇÃO DO SÓCIO
     codigo = Column(String, primary_key=True)

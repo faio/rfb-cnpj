@@ -8,7 +8,7 @@ class Cnae(Base):
     """
     Model com os dados do CNAE
     """
-    __tablename__ = 'cnae'
+    __tablename__ = 'cnaes'
 
     # CÓDIGO DA ATIVIDADE ECONÔMICA
     codigo = Column(String, primary_key=True)

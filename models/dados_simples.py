@@ -8,7 +8,7 @@ class DadoSimples(Base):
     """
     Model com os dados do simples nacional
     """
-    __tablename__ = 'dado_simples'
+    __tablename__ = 'dados_simples'
 
     id = Column(Integer, primary_key=True)
 

@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Natureza(Base):
-    __tablename__ = 'natureza'
+    __tablename__ = 'naturezas'
 
     # CÓDIGO DA NATUREZA JURÍDICA
     codigo = Column(String, primary_key=True)

@@ -8,7 +8,7 @@ class Socio(Base):
     """
     Model com os dados do sócio
     """
-    __tablename__ = 'socio'
+    __tablename__ = 'socios'
 
     id = Column(Integer, primary_key=True)
 
