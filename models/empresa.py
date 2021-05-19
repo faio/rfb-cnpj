@@ -16,7 +16,7 @@ class Empresa(Base):
     razao = Column(String)
 
     # CÓDIGO DA NATUREZA JURÍDICA
-    natureza = Column(BigInteger)
+    natureza = Column(Integer)
 
     # QUALIFICAÇÃO DA PESSOA FÍSICA RESPONSÁVEL PELA EMPRESA
     qualificacao_pf = Column(Integer)

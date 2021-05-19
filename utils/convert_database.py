@@ -152,7 +152,7 @@ class ConvertDatabase:
                 estabelecimento.data_situacao = convert.parse_date(data[6])
                 estabelecimento.motivo_situacao = data[7] or None
                 estabelecimento.cidade_exterior = data[8] or None
-                estabelecimento.pais = data[9] or None
+                estabelecimento.pais = convert.parse_int(data[9])
                 estabelecimento.inicio_atividade = convert.parse_date(data[10])
                 estabelecimento.cnae_fiscal = data[11] or None
                 estabelecimento.cnae_secundario = data[12] or None
@@ -266,12 +266,12 @@ class ConvertDatabase:
                 socio.identificador_socio = convert.parse_int(data[1])
                 socio.nome = data[2] or None
                 socio.cpf_cnpj = data[3] or None
-                socio.qualificacao = data[4] or None
+                socio.qualificacao = convert.parse_int(data[4])
                 socio.data_entrada_sociedade = convert.parse_date(data[5])
                 socio.codigo_pais = convert.parse_int(data[6])
                 socio.cpf_representante_legal = data[7] or None
                 socio.nome_representante_legal = data[8] or None
-                socio.qualificacao_representante_legal = data[9] or None
+                socio.qualificacao_representante_legal = convert.parse_int(data[9])
                 socio.faixa_etaria = data[10] or None
 
                 socio_cache.append(socio)
@@ -313,7 +313,7 @@ class ConvertDatabase:
                     )
 
                 pais = Pais()
-                pais.codigo = data[0] or None
+                pais.codigo = convert.parse_int(data[0])
                 pais.descricao = data[1] or None
 
                 pais_cache.append(pais)
@@ -375,7 +375,7 @@ class ConvertDatabase:
                     )
 
                 qualificacao = Qualificacao()
-                qualificacao.codigo = data[0] or None
+                qualificacao.codigo = convert.parse_int(data[0])
                 qualificacao.descricao = data[1] or None
 
                 qualificacao_cache.append(qualificacao)
@@ -406,7 +406,7 @@ class ConvertDatabase:
                     )
 
                 natureza = Natureza()
-                natureza.codigo = data[0] or None
+                natureza.codigo = convert.parse_int(data[0])
                 natureza.descricao = data[1] or None
 
                 naturezas_cache.append(natureza)

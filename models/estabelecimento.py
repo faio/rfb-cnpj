@@ -47,7 +47,7 @@ class Estabelecimento(Base):
     cidade_exterior = Column(String)
 
     # CÓDIGO DO PAIS
-    pais = Column(String)
+    pais = Column(Integer)
 
     # DATA DE INÍCIO DA ATIVIDADE
     inicio_atividade = Column(Date)

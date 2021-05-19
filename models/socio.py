@@ -32,7 +32,7 @@ class Socio(Base):
     cpf_cnpj = Column(String(length=14))
 
     # CÓDIGO DA QUALIFICAÇÃO DO SÓCIO
-    qualificacao = Column(String)
+    qualificacao = Column(Integer)
 
     # DATA DE ENTRADA NA SOCIEDADE
     data_entrada_sociedade = Column(Date)
@@ -47,7 +47,7 @@ class Socio(Base):
     nome_representante_legal = Column(String)
 
     # CÓDIGO DA QUALIFICAÇÃO DO REPRESENTANTE LEGAL
-    qualificacao_representante_legal = Column(String)
+    qualificacao_representante_legal = Column(Integer)
 
     # CÓDIGO CORRESPONDENTE À FAIXA ETÁRIA DO SÓCIO
     faixa_etaria = Column(Integer)
