@@ -74,8 +74,8 @@ class ConvertDatabase:
 
             for line in content:
                 row = str(line, encoding=settings.ENCODING, errors='replace')
-                row = row.replace('\n', '').replace('\0', '').split(';')
-                yield [r[1:-1] for r in row]
+                row = row.replace('\n', '').replace('\0', '')[1:-1].split('";"')
+                yield row
 
     def populate_empresa(self):
         """
@@ -90,6 +90,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[EMPRESA] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 7:
+                    raise ValueError(
+                        f'[EMPRESA] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 empresa = Empresa()
                 empresa.cnpj = data[0] or None
                 empresa.razao = data[1] or None
@@ -130,6 +136,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[ESTABELECIMENTO] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 30:
+                    raise ValueError(
+                        f'[ESTABELECIMENTO] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 estabelecimento = Estabelecimento()
                 estabelecimento.cnpj = data[0] or None
                 estabelecimento.cnpj_ordem = data[1] or None
@@ -196,6 +208,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[DADO SIMPLES] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 7:
+                    raise ValueError(
+                        f'[DADO SIMPLES] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 dados_simples = DadoSimples()
                 dados_simples.cnpj = data[0] or None
                 dados_simples.opcao_simples = data[1] or None
@@ -237,6 +255,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[SOCIO] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 11:
+                    raise ValueError(
+                        f'[SOCIO] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 socio = Socio()
                 socio.cnpj = data[0] or None
                 socio.identificador_socio = convert.parse_int(data[1])
@@ -282,6 +306,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[PAIS] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[PAIS] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 pais = Pais()
                 pais.codigo = data[0] or None
                 pais.descricao = data[1] or None
@@ -307,6 +337,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[MUNICIPIO] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[MUNICIPIO] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 municipio = Municipio()
                 municipio.codigo = data[0] or None
                 municipio.descricao = data[1] or None
@@ -332,6 +368,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[QUALIFICACAO] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[QUALIFICACAO] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 qualificacao = Qualificacao()
                 qualificacao.codigo = data[0] or None
                 qualificacao.descricao = data[1] or None
@@ -357,6 +399,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[NATUREZA] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[NATUREZA] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 natureza = Natureza()
                 natureza.codigo = data[0] or None
                 natureza.descricao = data[1] or None
@@ -382,6 +430,12 @@ class ConvertDatabase:
         for file in files_csvs:
             click.echo(f'[CNAE] Importando o CSV {file}', nl=True)
             for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[CNAE] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
                 cnae = Cnae()
                 cnae.codigo = data[0] or None
                 cnae.descricao = data[1] or None
