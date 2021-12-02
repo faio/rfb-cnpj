@@ -15,6 +15,7 @@ from time import perf_counter, sleep
 
 
 URL_BASE_RFB = 'http://200.152.38.155/CNPJ/'
+MAX_RETRY_DOWNLOAD = 10
 
 
 def get_urls(return_group: bool = True) -> str:
@@ -53,7 +54,7 @@ def get_urls(return_group: bool = True) -> str:
            canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls
 
 
-def download(url, path=''):
+def download(url, path='', retry_count=0):
     def get_length(meta):
         for k, v in meta._headers:
             if str(k).lower() == 'content-length':
@@ -61,10 +62,13 @@ def download(url, path=''):
 
         return None
 
+    if retry_count >= MAX_RETRY_DOWNLOAD:
+        raise Exception(f'Erro ao baixar o arquivo {url}! Número máximo de {MAX_RETRY_DOWNLOAD} tentativas alcançado!')
+
     file_name = url.split('/')[-1]  # Nome do arquivo
     url_byte = urlopen(url)
     meta = url_byte.info()
-    factor_convert_mb = 1e6
+    factor_convert_mb = 1048576
     file_size = get_length(meta)  # Tamanho do arquivo
     file_size_mb = file_size / factor_convert_mb  # Tamanho do arquivo em byte
 
@@ -85,12 +89,16 @@ def download(url, path=''):
             file_size_dl += len(buffer)
             file_size_dl_mb = file_size_dl / factor_convert_mb
             file_buffer.write(buffer)
-            velocity = file_size_dl // (perf_counter() - start) / 100000
+            velocity = file_size_dl // (perf_counter() - start) / factor_convert_mb
             percent = file_size_dl * 100. / file_size
             status = f"\rDownloading {file_name}: {file_size_dl_mb:10.2f}/{file_size_mb:2.2f} MB  [{percent:3.2f}%] " \
                      f"[{velocity:.3f} Mbps]"
 
             click.echo(status, nl=False)
+
+    if file_size_dl != file_size:  # Então, ocorreu algum erro com o download, recomeça!
+        os.remove(dir)
+        download(url, path, retry_count=retry_count + 1)
 
 
 def start_threads(path='download'):
