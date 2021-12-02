@@ -55,6 +55,12 @@ def get_urls(return_group: bool = True) -> str:
 
 
 def download(url, path='', retry_count=0):
+    """
+    Faz o download de algum arquivo
+    :param url: URL de onde se encontra o arquivo
+    :param path: Caminho raiz aonde será salvo o arquivo
+    :param retry_count: Parâmetro para realizar a contagem recursiva da quantidade de tentativas que foi executada, não informar
+    """
     def get_length(meta):
         for k, v in meta._headers:
             if str(k).lower() == 'content-length':
@@ -96,8 +102,11 @@ def download(url, path='', retry_count=0):
 
             click.echo(status, nl=False)
 
-    if file_size_dl != file_size:  # Então, ocorreu algum erro com o download, recomeça!
+    if file_size_dl == file_size:
+        click.echo(f'Download do arquivo {url} baixado com sucesso com {retry_count + 1} tentativas!')
+    else:  # Então, ocorreu algum erro com o download, recomeça!
         os.remove(dir)
+        click.echo(f'Erro ao baixar o arquivo {url}, tamanho baixado: {file_size_dl}, tamanho esperado {file_size}, tentativa de número {retry_count + 1}')
         download(url, path, retry_count=retry_count + 1)
 
 
