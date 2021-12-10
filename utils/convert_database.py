@@ -35,16 +35,17 @@ class ConvertDatabase:
         :param database_url: URL de conexão com o banco de dados
         :param directory: Diretório onde está os arquivos CSV
         """
-        self.engine = create_engine(
-            database_url,
-            echo=False,
-            future=True,
-            encoding=settings.ENCODING
-        )
 
+        engine_kwargs = {
+            'url': database_url,
+            'echo': False,
+            'future': True,
+            'encoding': settings.ENCODING
+        }
+
+        self.engine = create_engine(**engine_kwargs)
         self.directory = directory
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.session = sessionmaker(bind=self.engine)()
 
     def create_tables(self):
         """

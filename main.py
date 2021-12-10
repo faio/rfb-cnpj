@@ -67,8 +67,12 @@ def start(baixar, threads, diretorio_arquivos, database_url):
     thread_name = 'cnpj_insert'
     tsleep = 0.05
 
+    # Verificando se é para rodar sem usar as threads
+    # OBS: SQLite não suporta muitas threads, por isso, evita rodar o mesmo em threads
+    run_in_singleton = database_url.startswith('sqlite') or not threads
+
     for function in functions:
-        if threads:
+        if not run_in_singleton:
             threading.Thread(
                 target=run_insert,
                 args=[function, database_url, diretorio_arquivos],
@@ -77,7 +81,7 @@ def start(baixar, threads, diretorio_arquivos, database_url):
         else:
             run_insert(function, database_url, diretorio_arquivos)
 
-    if threads:
+    if not run_in_singleton:
         threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
 
         while len(threads_runinngs) >= len(functions):
