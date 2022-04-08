@@ -46,12 +46,13 @@ def get_urls(return_group: bool = True) -> str:
     qualificacao_urls = [url for url in urls if url.endswith('QUALSCSV.zip')]
     natureza_urls = [url for url in urls if url.endswith('NATJUCSV.zip')]
     municipios_urls = [url for url in urls if url.endswith('MUNICCSV.zip')]
+    motivo_cadastral_urls = [url for url in urls if url.endswith('MOTICSV.zip')]
 
     if return_group:
         return empresa_urls + estabelecimento_urls + socio_urls + dados_simples_urls\
-               + canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls
+               + canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
     return empresa_urls, estabelecimento_urls, socio_urls, dados_simples_urls, \
-           canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls
+           canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
 
 
 def download(url, path='', retry_count=0):
