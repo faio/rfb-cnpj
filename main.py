@@ -61,7 +61,8 @@ def start(baixar, threads, diretorio_arquivos, database_url):
         'populate_empresa',
         'populate_estabelecimento',
         'populate_dado_simples',
-        'populate_socio'
+        'populate_socio',
+        'populate_motivo_cadastral'
     ]
 
     thread_name = 'cnpj_insert'

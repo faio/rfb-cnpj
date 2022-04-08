@@ -19,6 +19,7 @@ from models.municipio import Municipio
 from models.qualificacao import Qualificacao
 from models.natureza import Natureza
 from models.cnae import Cnae
+from models.motivo_cadastral import MotivoCadastral
 from pathlib import Path
 from zipfile import ZipFile
 from utils import convert
@@ -60,6 +61,7 @@ class ConvertDatabase:
         Municipio().metadata.create_all(self.engine)
         Qualificacao().metadata.create_all(self.engine)
         Natureza().metadata.create_all(self.engine)
+        MotivoCadastral().metadata.create_all(self.engine)
 
     def read_file(self, path: str):
         """
@@ -448,3 +450,34 @@ class ConvertDatabase:
             self.session.commit()
 
         click.echo('[CNAE] Finalizado a inserção dos dados de CNAE', nl=True)
+
+    def populate_motivo_cadastral(self):
+        """
+        Preenche os dados da tabela de motivo cadastral
+        :return:
+        """
+
+        path = Path(self.directory)
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('MOTICSV.zip'))
+        motivo_cadastral_cache = []
+
+        for file in files_csvs:
+            click.echo(f'[MOTIVACAO_CADASTRAL] Importando o CSV {file}', nl=True)
+            for i, data in enumerate(self.read_file(file)):
+
+                if len(data) != 2:
+                    raise ValueError(
+                        f'[MOTIVACAO_CADASTRAL] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}'
+                    )
+
+                motivo_cadastral = MotivoCadastral()
+                motivo_cadastral.codigo = convert.parse_int(data[0])
+                motivo_cadastral.descricao = data[1] or None
+
+                motivo_cadastral_cache.append(motivo_cadastral)
+
+        if motivo_cadastral_cache:
+            self.session.bulk_save_objects(motivo_cadastral_cache)
+            self.session.commit()
+
+        click.echo('[MOTIVACAO_CADASTRAL] Finalizado a inserção dos Motivos Cadastral', nl=True)
