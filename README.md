@@ -14,12 +14,27 @@
   
  - Baixar os arquivos públicos disponibilizados pela RFB.
  - Converter os dados de empresa, estabelecimento, sócio, cnae, países, municípios qualificações, naturezas e dados do simples para um SGBD compatível com a biblioteca SQLAchemy.  
-- Possibilidade de executar o processo em threads, melhorando significativamente a performance    
+- Possibilidade de executar o processo em threads, melhorando significativamente a performance
+
+**Docker**
+
+ - Para facilitar o teste/uso dessa biblioteca, disponibilizamos os arquivos Dockerfile e docker-compose.yml
+ - Para usar basta estar na raiz do projeto e executar o seguinte comando:
+   ```
+    docker-compose up -d
+   ```
+ - Caso não tenha familiaridade com Docker, por favor consulte a documentação
+
+   [Docker documentação](https://docs.docker.com/)   
 
 **OBS:**  
   
 * Biblioteca construída buscando a menor dependência possível de libs externas.
 * Requer python 3.7 ou superior, recomendado o python 3.9
+* Se for utilizar o PostgreSQL como banco de dados, adicionar a seguinte dependência ao arquivo requirements.txt:
+  ```
+  psycopg2==2.9.3
+  ```
 * Para executar o sistema:        
   - Primeiro, instale as dependências:   
 	
