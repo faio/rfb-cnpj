@@ -1,0 +1,45 @@
+version: '3.8'
+
+volumes:
+  rfb-cnpj-dbdata:
+
+networks:
+  rfb-cnpj:
+    name: rfb_cnpj_net
+
+services:
+  postgresql:
+    container_name: rfb-cnpj-dbdata
+    image: postgres:12.5
+    restart: 'unless-stopped'
+    ports: 
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rfb_cnpj
+    volumes:
+      - rfb-cnpj-dbdata:/var/lib/postgresql/data
+    networks:
+      - rfb-cnpj
+  
+  rfb-cnpj:
+    container_name: rfb-cnpj
+    build: .
+    image: rfb-cnpj
+    # Diretório onde serão baixados os arquivos da receita
+    # Para facilitar, foi criado um diretório diretamente na raiz do projeto
+    # Caso queira usar outro diretório, apenas altere na linha abaixo 
+    volumes:
+      - ./download:/usr/src/rfb-cnpj/download
+    # Altere o comando abaixo passando os parametros que desejar.
+    # Verifique a documentação para conhecer os parâmetros
+    # Atenção ao detalhe que o parâmetro diretorio_arquivos aponta para o diretório dentro do volume mapeado anteriormente.
+    # E o parametro database_url contem a string de conexão com o container do postgresql instanciado também por esse arquivo
+    command: python main.py --diretorio_arquivos '/usr/src/rfb-cnpj/download' --database_url 'postgresql://postgres:postgres@postgresql:5432/rfb_cnpj'
+    depends_on:
+      - postgresql
+    networks:
+      - rfb-cnpj
+
+
