@@ -18,7 +18,7 @@
 
 **Docker**
 
- - Para facilitar o teste/uso dessa biblioteca, disponibilizamos os arquivos Dockerfile e docker-compose.yml
+ - Para facilitar o teste/uso dessa biblioteca, disponibilizamos os arquivos Dockerfile e docker-compose.yml com o PostgreSQL
  - Para usar basta estar na raiz do projeto e executar o seguinte comando:
    ```
     docker-compose up -d
@@ -26,12 +26,14 @@
  - Caso não tenha familiaridade com Docker, por favor consulte a documentação
 
    [Docker documentação](https://docs.docker.com/)   
+   
+ - Atente-se ao tamanho em disco, necessário em torno de 25GB de espaço em disco. Os indíces não são criados automáticamente, ficando ao seu criterio cria-lós ou não.
 
 **OBS:**  
   
 * Biblioteca construída buscando a menor dependência possível de libs externas.
 * Requer python 3.7 ou superior, recomendado o python 3.9
-* Se for utilizar o PostgreSQL como banco de dados, adicionar a seguinte dependência ao arquivo requirements.txt:
+* Se for utilizar o PostgreSQL como banco de dados, adicionar a seguinte dependência ao arquivo requirements.txt, o tamanho do banco criado fica em torno de 24GB:
   ```
   psycopg2==2.9.3
   ```
@@ -58,3 +60,8 @@
   - No banco SQLite ocorreu erro ao executar o mesmo em threads, no postgreSQL funcionou corretamente o processo.
   - Processo testado apenas no SQLite e no PostgreSQL
   - Página com os layouts e arquivo para baixar: https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj
+
+
+**Contribuições**
+ - Motivo da Situação Cadastral / juanfariasdev (PR #9)
+ - Docker / moisesrms (PR #10)
