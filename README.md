@@ -62,6 +62,8 @@
   - Página com os layouts e arquivo para baixar: https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/cadastros/consultas/dados-publicos-cnpj
 
 
+
 **Contribuições**
+
  - Motivo da Situação Cadastral / juanfariasdev (PR #9)
  - Docker / moisesrms (PR #10)
