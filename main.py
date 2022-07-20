@@ -1,23 +1,32 @@
 import click
-import threading
+import logging
 
-from time import sleep
-from urllib.parse import urljoin
-from utils import download
-from utils.download import URL_BASE_RFB
-from utils.convert_database import ConvertDatabase
+from importlib import import_module
+from functools import partial
+from multiprocessing import Pool
+from rfb.utils import download
+from rfb.utils.convert_database import ConvertDatabase
 
 
-def run_insert(function_name, database_url, diretorio_arquivos):
+log = logging.getLogger('rfb')
+log.setLevel(logging.INFO)
+logging.basicConfig(filename='rfb.log')
+
+
+def run_insert(database_url: str, diretorio_arquivos: str, function_params: dict):
     """
     Função auxiliar para permitir executar ou não em threads as inserções no banco
     de dados
-    :param function_name: Nome da função dentro de ConvertDatabase
     :param database_url: URL de conexão com o banco de dados
     :param diretorio_arquivos: Diretório base dos arquivos CSV
+    :param run_in_singleton: Não é para fazer a inserção de forma pararela na base de dados
     """
-    convert_database = ConvertDatabase(database_url, diretorio_arquivos)
-    getattr(convert_database, function_name)()
+    module, cls = function_params['model'].rsplit('.', maxsplit=1)
+    module = import_module(module)
+    model = getattr(module, cls)
+
+    function_params['model'] = model
+    ConvertDatabase(database_url, diretorio_arquivos).populate(**function_params)
 
 
 @click.command()
@@ -46,67 +55,49 @@ def start(baixar, threads, diretorio_arquivos, database_url):
                 type=click.STRING
             )
 
-    click.secho(
-        f"""
+    msg = f"""
         Iniciando com os parâmetros:
             baixar: {baixar}
             threads: {threads}
             diretorio_arquivos: {diretorio_arquivos}
             database_url: {database_url}
         """
-    )
+    log.info(msg)
+    click.secho(msg)
 
     if baixar:
-        if threads:
-            download.start_threads(diretorio_arquivos)
-        else:
-            for url in download.get_urls():
-                download.download(urljoin(URL_BASE_RFB, url), diretorio_arquivos)
+        process = None if threads else 1
+        download.start_download(diretorio_arquivos, process=process)
+
+    # Verificando se é para rodar sem o uso de paralerismo
+    # OBS: SQLite não suporta paralelismo
+    run_in_singleton = database_url.startswith('sqlite') or not threads
 
     convert_database = ConvertDatabase(database_url, diretorio_arquivos)
     convert_database.create_tables()  # Cria as tabelas
 
-    # Nomes das funções de inserção de dados
-    functions = [
-        'populate_cnae',
-        'populate_paises',
-        'populate_municipios',
-        'populate_qualificacoes',
-        'populate_naturezas',
-        'populate_empresa',
-        'populate_estabelecimento',
-        'populate_dado_simples',
-        'populate_socio',
-        'populate_motivo_cadastral'
+    params = [
+        {'pattern_name': 'cnae', 'qt_column': 2, 'model': 'rfb.models.Cnae'},
+        {'pattern_name': 'motivo_cadastral', 'qt_column': 2, 'model': 'rfb.models.MotivoCadastral'},
+        {'pattern_name': 'municipio', 'qt_column': 2, 'model': 'rfb.models.Municipio'},
+        {'pattern_name': 'natureza', 'qt_column': 2, 'model': 'rfb.models.Natureza'},
+        {'pattern_name': 'pais', 'qt_column': 2, 'model': 'rfb.models.Pais'},
+        {'pattern_name': 'qualificacao', 'qt_column': 2, 'model': 'rfb.models.Qualificacao'},
+        {'pattern_name': 'dado_simples', 'qt_column': 7, 'model': 'rfb.models.DadoSimples'},
+        {'pattern_name': 'socio', 'qt_column': 11, 'model': 'rfb.models.Socio'},
+        {'pattern_name': 'empresa', 'qt_column': 7, 'model': 'rfb.models.Empresa'},
+        {'pattern_name': 'estabelecimento', 'qt_column': 30, 'model': 'rfb.models.Estabelecimento'},
     ]
 
-    thread_name = 'cnpj_insert'
-    tsleep = 0.05
+    process = 1 if run_in_singleton else len(params)
 
-    # Verificando se é para rodar sem usar as threads
-    # OBS: SQLite não suporta muitas threads, por isso, evita rodar o mesmo em threads
-    run_in_singleton = database_url.startswith('sqlite') or not threads
+    with Pool(process) as pool:
+        args = []
+        for param in enumerate(params):
+            args.append(param)
 
-    for function in functions:
-        if not run_in_singleton:
-            threading.Thread(
-                target=run_insert,
-                args=[function, database_url, diretorio_arquivos],
-                name=thread_name
-            ).start()
-        else:
-            run_insert(function, database_url, diretorio_arquivos)
-
-    if not run_in_singleton:
-        threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
-
-        while len(threads_runinngs) >= len(functions):
-            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
-            sleep(tsleep)
-
-        while threads_runinngs:
-            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
-            sleep(tsleep)
+        function_insert = partial(run_insert,  database_url, diretorio_arquivos)
+        pool.starmap(function_insert, args)
 
 
 if __name__ == '__main__':
