@@ -130,7 +130,3 @@ def start_download(path='download', process: Optional[int] = None) -> None:
             args.append([url, path])
 
         pool.starmap(_download, args)
-
-
-if __name__ == '__main__':
-    start_download()
