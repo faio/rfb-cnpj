@@ -1,0 +1,4 @@
+[flake8]
+indent-size=4
+max-line-length=120
+exclude = venv, .venv, .git
