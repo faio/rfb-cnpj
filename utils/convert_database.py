@@ -87,7 +87,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('EMPRECSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.startswith('Empresas'))
         empresas_cache = []
 
         for file in files_csvs:
@@ -133,7 +133,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('ESTABELE.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.startswith('Estabelecimentos'))
         estabelecimentos_cache = []
 
         for file in files_csvs:
@@ -205,7 +205,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.find('SIMPLES') > 0)
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Simples.zip')
         dados_simples_cache = []
 
         for file in files_csvs:
@@ -252,7 +252,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('SOCIOCSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.startswith('Socios'))
         socio_cache = []
 
         for file in files_csvs:
@@ -303,7 +303,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('PAISCSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Paises.zip')
         pais_cache = []
 
         for file in files_csvs:
@@ -334,7 +334,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('MUNICCSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Municipios.zip')
         municipios_cache = []
 
         for file in files_csvs:
@@ -365,7 +365,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('QUALSCSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Qualificacoes.zip')
         qualificacao_cache = []
 
         for file in files_csvs:
@@ -396,7 +396,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('NATJUCSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Naturezas.zip')
         naturezas_cache = []
 
         for file in files_csvs:
@@ -427,7 +427,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('CNAECSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Cnaes.zip')
         cnae_cache = []
 
         for file in files_csvs:
@@ -458,7 +458,7 @@ class ConvertDatabase:
         """
 
         path = Path(self.directory)
-        files_csvs = sorted(str(p) for p in path.iterdir() if p.name.endswith('MOTICSV.zip'))
+        files_csvs = sorted(str(p) for p in path.iterdir() if p.name == 'Motivos.zip')
         motivo_cadastral_cache = []
 
         for file in files_csvs:

@@ -25,11 +25,26 @@ def run_insert(function_name, database_url, diretorio_arquivos):
               help="É para baixar os arquivos?")
 @click.option("--threads", show_default=True, default=True, type=click.BOOL,
               help="É para ser executado em Threads?")
-@click.option("--diretorio_arquivos", show_default=True, default='download',
-              type=click.STRING, help="Pasta de destino dos arquivos de download")
-@click.option("--database_url", show_default=True, default='sqlite:///db.sqlite3',
-              type=click.STRING, help="URL de conexão do banco de dados")
+@click.option("--diretorio_arquivos", "--diretorio", "--diretorio-arquivos",
+              show_default=True, default='download',
+              type=click.Path(), help="Pasta de destino dos arquivos de download")
+@click.option("--database_url", "--database", "--database-url", type=click.STRING, default=None,
+              help="URL de conexão do banco de dados")
 def start(baixar, threads, diretorio_arquivos, database_url):
+
+    if database_url is None:
+        if click.prompt(
+            "Não foi informado a url de conexão com o banco de dados, deseja utilizar o SQLite?",
+            show_choices=True,
+            type=click.Choice(['Y', 'N'], case_sensitive=False)
+        ) == 'Y':
+            database_url = 'sqlite:///db.sqlite3'
+        else:
+            database_url = click.prompt(
+                "Informe e confirme a url de conexão com o banco de dados: ",
+                confirmation_prompt=True,
+                type=click.STRING
+            )
 
     click.secho(
         f"""

@@ -36,23 +36,22 @@ def get_urls(return_group: bool = True) -> str:
     # Filtra peloas arquivos que terminam com .zip
     urls = [url for url in urls if url.endswith('.zip')]
 
-    # Pega apenas os que são necessários, que são os arquivos de sócios, empresas e canes
-    empresa_urls = [url for url in urls if "empresa" in url.lower()]
-    estabelecimento_urls = [url for url in urls if "estabelecimento" in url.lower()]
-    socio_urls = [url for url in urls if "socio" in url.lower()]
-    dados_simples_urls = [url for url in urls if "simples" in url.lower()]
-    cnaes_urls = [url for url in urls if "cnae" in url.lower()]
-    pais_urls = [url for url in urls if "pais" in url.lower()]
-    qualificacao_urls = [url for url in urls if "qualifica" in url.lower()]
-    natureza_urls = [url for url in urls if "natureza" in url.lower()]
-    municipios_urls = [url for url in urls if "municipio" in url.lower()]
-    motivo_cadastral_urls = [url for url in urls if "motivo" in url.lower()]
+    canes_urls = [url for url in urls if url == 'Cnaes.zip']
+    empresa_urls = [url for url in urls if url.startswith('Empresas')]
+    estabelecimento_urls = [url for url in urls if url.startswith('Estabelecimentos')]
+    motivo_cadastral_urls = [url for url in urls if url == 'Motivos.zip']
+    municipios_urls = [url for url in urls if url == 'Municipios.zip']
+    natureza_urls = [url for url in urls if url == 'Naturezas.zip']
+    pais_urls = [url for url in urls if url == 'Paises.zip']
+    qualificacao_urls = [url for url in urls if url == 'Qualificacoes.zip']
+    dados_simples_urls = [url for url in urls if url == 'Simples.zip']
+    socio_urls = [url for url in urls if url.startswith('Socios')]
 
     if return_group:
         return empresa_urls + estabelecimento_urls + socio_urls + dados_simples_urls\
-               + cnaes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
+               + canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
     return empresa_urls, estabelecimento_urls, socio_urls, dados_simples_urls, \
-           cnaes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
+           canes_urls + pais_urls + qualificacao_urls + natureza_urls + municipios_urls + motivo_cadastral_urls
 
 
 def download(url, path='', retry_count=0):
