@@ -2,7 +2,6 @@ import click
 import logging
 
 from importlib import import_module
-from functools import partial
 from multiprocessing import Pool
 from rfb.utils import download
 from rfb.utils.convert_database import ConvertDatabase
@@ -10,7 +9,7 @@ from rfb.utils.convert_database import ConvertDatabase
 
 log = logging.getLogger('rfb')
 log.setLevel(logging.INFO)
-logging.basicConfig(filename='rfb.log')
+logging.basicConfig(filename='rfb.log', format='%(levelname)s: %(name)s: %(asctime)s - %(message)s')
 
 
 def run_insert(database_url: str, diretorio_arquivos: str, function_params: dict):
@@ -93,11 +92,10 @@ def start(baixar, threads, diretorio_arquivos, database_url):
 
     with Pool(process) as pool:
         args = []
-        for param in enumerate(params):
-            args.append(param)
+        for param in params:
+            args.append([database_url, diretorio_arquivos, param])
 
-        function_insert = partial(run_insert,  database_url, diretorio_arquivos)
-        pool.starmap(function_insert, args)
+        pool.starmap(run_insert, args)
 
 
 if __name__ == '__main__':
