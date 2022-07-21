@@ -24,7 +24,21 @@ def _get_urls() -> list:
     """ Retorna todas as urls/nomes dos arquivos da receita """
 
     # Baixa a página de download da receita
-    data = str(urlopen(URL_BASE_RFB).read(), encoding='utf8')
+    retry = 0
+    while retry < MAX_RETRY_DOWNLOAD:
+        try:
+            data = str(urlopen(URL_BASE_RFB).read(), encoding='utf8')
+            break
+        except ConnectionResetError:
+            msg = f'Erro ao recuperar as urls dos arquivos, tenativa {retry + 1}, tentando novamente...'
+            click.echo(msg, err=True)
+            log.warning(msg)
+            retry += 1
+
+    if not data:
+        msg = 'Erro ao recuperar as urls dos arquivos'
+        log.error(msg)
+        raise ValueError(msg)
 
     # Pega todas as urls que foram retornadas
     all_urls = re.findall(r'href=[\'"]?([^\'" >]+)', data)
@@ -82,31 +96,38 @@ def _download(url: str, path: str = '', retry_count: int = 0) -> None:
     if path and not os.path.isdir(path):
         os.mkdir(path)
 
-    with open(dir, 'wb') as file_buffer:
-        while True:
-            buffer = url_byte.read(block_sz)
-            if not buffer:
-                break
+    try:
+        with open(dir, 'wb') as file_buffer:
 
-            file_size_dl += len(buffer)
-            file_size_dl_mb = file_size_dl / factor_convert_mb
-            file_buffer.write(buffer)
-            velocity = file_size_dl // (perf_counter() - start) / factor_convert_mb
-            percent = file_size_dl * 100. / file_size
-            status = f"\rDownloading {file_name}: {file_size_dl_mb:10.2f}/{file_size_mb:2.2f} MB  [{percent:3.2f}%] " \
-                     f"[{velocity:.3f} Mbps]"
+                while True:
+                    buffer = url_byte.read(block_sz)
+                    if not buffer:
+                        break
 
-            click.echo(status, nl=False)
+                    file_size_dl += len(buffer)
+                    file_size_dl_mb = file_size_dl / factor_convert_mb
+                    file_buffer.write(buffer)
+                    velocity = file_size_dl // (perf_counter() - start) / factor_convert_mb
+                    percent = file_size_dl * 100. / file_size
+                    status = f"\rDownloading {file_name}: {file_size_dl_mb:10.2f}/{file_size_mb:2.2f} MB  [{percent:3.2f}%] " \
+                             f"[{velocity:.3f} Mbps]"
 
-    if file_size_dl == file_size:
-        click.echo(f'Download do arquivo {url} baixado com sucesso com {retry_count + 1} tentativas!')
-    else:  # Então, ocorreu algum erro com o download, recomeça!
-        os.remove(dir)
-        msg = f'Erro ao baixar o arquivo {url}, tamanho baixado: {file_size_dl}, '\
-              f'tamanho esperado {file_size}, tentativa de número {retry_count + 1}'
-        log.warning(msg)
-        click.echo(msg, err=True)
-        _download(url, path, retry_count=retry_count + 1)
+                    click.echo(status, nl=False)
+    except ConnectionResetError:
+        # Ignora essa excessão, pois irá cair no else abaixo e reiniciar o download
+        pass
+    finally:
+        if file_size_dl == file_size:
+            msg = f'Download do arquivo {url} baixado com sucesso com {retry_count + 1} tentativas!'
+            log.info(msg)
+            click.echo(msg)
+        else:  # Então, ocorreu algum erro com o download, recomeça!
+            os.remove(dir)
+            msg = f'Erro ao baixar o arquivo {url}, tamanho baixado: {file_size_dl}, '\
+                  f'tamanho esperado {file_size}, tentativa de número {retry_count + 1}'
+            log.warning(msg)
+            click.echo(msg, err=True)
+            _download(url, path, retry_count=retry_count + 1)
 
 
 def start_download(path='download', process: Optional[int] = None) -> None:
