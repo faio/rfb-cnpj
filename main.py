@@ -1,8 +1,10 @@
 import click
 import logging
+import threading
+
+from time import sleep
 
 from importlib import import_module
-from multiprocessing import Pool
 from rfb.utils import download
 from rfb.utils.convert_database import ConvertDatabase
 
@@ -65,8 +67,7 @@ def start(baixar, threads, diretorio_arquivos, database_url):
     click.secho(msg)
 
     if baixar:
-        process = None if threads else 1
-        download.start_download(diretorio_arquivos, process=process)
+        download.start_download(diretorio_arquivos)
 
     # Verificando se é para rodar sem o uso de paralerismo
     # OBS: SQLite não suporta paralelismo
@@ -88,14 +89,29 @@ def start(baixar, threads, diretorio_arquivos, database_url):
         {'pattern_name': 'estabelecimento', 'qt_column': 30, 'model': 'rfb.models.Estabelecimento'},
     ]
 
-    process = 1 if run_in_singleton else len(params)
+    thread_name = 'cnpj_insert'
+    tsleep = 0.05
 
-    with Pool(process) as pool:
-        args = []
-        for param in params:
-            args.append([database_url, diretorio_arquivos, param])
+    for param in params:
+        if not run_in_singleton:
+            threading.Thread(
+                target=run_insert,
+                args=[database_url, diretorio_arquivos, param],
+                name=thread_name
+            ).start()
+        else:
+            run_insert(database_url, diretorio_arquivos, param)
 
-        pool.starmap(run_insert, args)
+    if not run_in_singleton:
+        threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+
+        while len(threads_runinngs) >= len(params):
+            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+            sleep(tsleep)
+
+        while threads_runinngs:
+            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+            sleep(tsleep)
 
 
 if __name__ == '__main__':

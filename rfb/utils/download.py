@@ -6,13 +6,12 @@
 import re
 import os
 import click
+import threading
 
-from typing import Optional
 from logging import getLogger
-from multiprocessing import Pool
 from urllib.request import urlopen
 from urllib.parse import urljoin
-from time import perf_counter
+from time import perf_counter, sleep
 from rfb.utils import NAMES_PATTERNS
 from rfb.settings import MAX_RETRY_DOWNLOAD, URL_BASE_RFB
 
@@ -130,24 +129,31 @@ def _download(url: str, path: str = '', retry_count: int = 0) -> None:
             _download(url, path, retry_count=retry_count + 1)
 
 
-def start_download(path='download', process: Optional[int] = None) -> None:
+def start_download(path='download'):
     """
-    Inicia o processo de download de forma paralera
+    Inicia o processo de download em Threads
     :param path: Caminho onde irá salvar os arquivos baixados, default: download
-    :param process: Quantidade de processos que será utilizado na Pool
+    :return:
     """
     file_list = _get_urls()
+    max_threads = len(file_list)
+    thread_name = 'cnpj_download'
+    tsleep = 0.05
 
     msg = 'Iniciando o download dos arquivos'
     log.info(msg)
     click.echo(msg)
 
-    process = len(file_list) if process is None else process
+    for i, file in enumerate(file_list):
+        url = urljoin(URL_BASE_RFB, file)
+        threading.Thread(target=_download, args=[url, path], name=thread_name).start()
 
-    with Pool(process) as pool:
-        args = []
-        for i, file in enumerate(file_list):
-            url = urljoin(URL_BASE_RFB, file)
-            args.append([url, path])
+    dload_threads = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
 
-        pool.starmap(_download, args)
+    while len(dload_threads) >= max_threads:
+        dload_threads = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+        sleep(tsleep)
+
+    while dload_threads:
+        dload_threads = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+        sleep(tsleep)

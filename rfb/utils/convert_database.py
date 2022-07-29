@@ -8,7 +8,7 @@ from rfb import settings
 
 from typing import Optional
 from logging import getLogger
-from multiprocessing import Pool
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.decl_api import DeclarativeMeta
@@ -251,7 +251,6 @@ class ConvertDatabase:
         if parse_function is None:
             parse_function = f'parse_{pattern_name}'
 
-        values = []
         for file in files_csvs:
             self._execute(
                 populate_name=populate_name,
@@ -260,9 +259,6 @@ class ConvertDatabase:
                 model=model,
                 file=file,
             )
-
-        with Pool(1) as pool:
-            pool.starmap(self._execute, values)
 
         info = f'[{populate_name}] Finalizado a inserção dos { populate_name }'
         log.info(info)
@@ -292,6 +288,7 @@ class ConvertDatabase:
         log.info(msg)
         click.echo(msg, nl=True)
         rows_cache = []
+        parse_function = getattr(self, parse_function)
 
         for i, row in enumerate(read_file(file)):
 
@@ -301,20 +298,17 @@ class ConvertDatabase:
                 log.error(msg)
                 raise ValueError(msg)
 
-            model_instance = model(
-                **getattr(self, parse_function)(row)
-            )
-            rows_cache.append(model_instance)
+            rows_cache.append(parse_function(row))
 
             if i > 0 and i % settings.CHUNK_ROWS_INSERT_DATABASE == 0:
                 msg = f'[{populate_name}] Inserindo o registro { i + 1 } do arquivo {file}'
                 log.info(msg)
                 click.echo(msg, nl=True)
-                self.session.bulk_save_objects(rows_cache)
+                self.session.bulk_insert_mappings(model, rows_cache)
                 self.session.commit()
                 rows_cache = []
 
         # Inserindo os resquícios de dados que podem ter ficado sem ser inseridos
         if rows_cache:
-            self.session.bulk_save_objects(rows_cache)
+            self.session.bulk_insert_mappings(model, rows_cache)
             self.session.commit()
