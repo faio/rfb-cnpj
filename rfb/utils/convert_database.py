@@ -6,7 +6,6 @@
 import click
 from rfb import settings
 
-from functools import partialmethod, partial
 from typing import Optional
 from logging import getLogger
 from multiprocessing import Pool
@@ -296,7 +295,7 @@ class ConvertDatabase:
 
         for i, row in enumerate(read_file(file)):
 
-            if len(row) != 2:
+            if len(row) != columns:
                 msg = f'[{populate_name}] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}! '\
                       f'Esperado {columns} e encontrado {len(row)}'
                 log.error(msg)
