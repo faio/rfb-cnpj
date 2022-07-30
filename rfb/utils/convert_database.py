@@ -44,8 +44,8 @@ def read_file(path: str) -> list:
         content = file.open(name, mode='r')
 
         for line in content:
-            row = str(line, encoding=settings.ENCODING, errors='replace')
-            row = row.replace('\n', '').replace('\0', '')[1:-1].split('";"')
+            row = line.strip().decode(encoding=settings.ENCODING, errors='replace')
+            row = row.replace('\0', '')[1:-1].split('";"')
             yield row
 
 
@@ -257,7 +257,7 @@ class ConvertDatabase:
                 columns=qt_column,
                 parse_function=parse_function,
                 model=model,
-                file=file,
+                file=file
             )
 
         info = f'[{populate_name}] Finalizado a inserção dos { populate_name }'
@@ -291,7 +291,6 @@ class ConvertDatabase:
         parse_function = getattr(self, parse_function)
 
         for i, row in enumerate(read_file(file)):
-
             if len(row) != columns:
                 msg = f'[{populate_name}] Erro de integridade na leitura do arquivo, linha {i} arquivo {file}! '\
                       f'Esperado {columns} e encontrado {len(row)}'
@@ -302,7 +301,7 @@ class ConvertDatabase:
 
             if i > 0 and i % settings.CHUNK_ROWS_INSERT_DATABASE == 0:
                 msg = f'[{populate_name}] Inserindo o registro { i + 1 } do arquivo {file}'
-                log.info(msg)
+                log.debug(msg)
                 click.echo(msg, nl=True)
                 self.session.bulk_insert_mappings(model, rows_cache)
                 self.session.commit()

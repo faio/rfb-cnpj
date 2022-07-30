@@ -1,8 +1,8 @@
 # Encoding do arquivo recebido pela RFB e do SGBD que será criado
-ENCODING = 'ISO-8859-1'
+ENCODING = 'UTF8'
 
 # Tamanho dos buffer no momento de persistir os dados no SGBD
-CHUNK_ROWS_INSERT_DATABASE = 100_000
+CHUNK_ROWS_INSERT_DATABASE = 20_000
 
 # Máxima de tentativas de download
 MAX_RETRY_DOWNLOAD = 100

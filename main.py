@@ -103,14 +103,14 @@ def start(baixar, threads, diretorio_arquivos, database_url):
             run_insert(database_url, diretorio_arquivos, param)
 
     if not run_in_singleton:
-        threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+        threads_runinngs = [x.name for x in threading.enumerate() if thread_name == x.name]
 
         while len(threads_runinngs) >= len(params):
-            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+            threads_runinngs = [x.name for x in threading.enumerate() if thread_name == x.name]
             sleep(tsleep)
 
         while threads_runinngs:
-            threads_runinngs = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
+            threads_runinngs = [x.name for x in threading.enumerate() if thread_name == x.name]
             sleep(tsleep)
 
 
