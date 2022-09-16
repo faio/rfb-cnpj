@@ -23,6 +23,7 @@ from rfb.models import Qualificacao
 from rfb.models import Natureza
 from rfb.models import Cnae
 from rfb.models import MotivoCadastral
+from rfb.models import Cidade
 from pathlib import Path, PurePath
 from zipfile import ZipFile
 from rfb.utils import NAMES_PATTERNS
@@ -45,7 +46,7 @@ def read_file(path: str) -> list:
 
         for line in content:
             row = line.strip().decode(encoding=settings.ENCODING, errors='replace')
-            row = row.replace('\0', '')[1:-1].split('";"')
+            row = row.replace('\n', '').replace('\0', '')[1:-1].split('";"')
             yield row
 
 
@@ -86,6 +87,7 @@ class ConvertDatabase:
         Qualificacao().metadata.create_all(self.engine)
         Natureza().metadata.create_all(self.engine)
         MotivoCadastral().metadata.create_all(self.engine)
+        Cidade().metadata.create_all(self.engine)
 
     def parse_empresa(self, row: list) -> dict:
         """ Faz o parse e tratamento da linha do arquivo em um dict compativo com models.Empresa """
@@ -218,6 +220,18 @@ class ConvertDatabase:
         return {
             'codigo': convert.parse_int(row[0]),
             'descricao': row[1] or None
+        }
+
+    def parse_cidade(self, row: list) -> dict:
+        """ Faz o parse e tratamento da linha do arquivo em um dict compativo com models.Cidades """
+
+        return {
+            'cod_tom': convert.parse_int(row[5]),
+            'nome': row[0] or None,
+            'uf': row[1] or None,
+            'ibge': row[2] or None,
+            'latitude': row[3] or None,
+            'longitude': row[4] or None
         }
 
     def populate(self,

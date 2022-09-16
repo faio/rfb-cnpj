@@ -12,5 +12,6 @@ NAMES_PATTERNS = {
     'pais': 'Paises',
     'qualificacao': 'Qualificacoes',
     'dado_simples': 'Simples',
-    'socio': 'Socios'
+    'socio': 'Socios',
+    'cidade': 'Cidades'
 }

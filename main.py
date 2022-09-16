@@ -7,12 +7,26 @@ from time import sleep
 from importlib import import_module
 from rfb.utils import download
 from rfb.utils.convert_database import ConvertDatabase
-
+import shutil
+import os
 
 log = logging.getLogger('rfb')
 log.setLevel(logging.INFO)
 logging.basicConfig(filename='rfb.log', format='%(levelname)s: %(name)s: %(asctime)s - %(message)s')
 
+
+# Source path
+source = "rfb/extras/"
+ 
+# Destination path
+destination = "download/"
+files = os.listdir(source)
+
+shutil.copytree(source, destination)
+for fname in files:
+    # copying the files to the
+    # destination directory
+    shutil.copy2(os.path.join(source,fname), destination)
 
 def run_insert(database_url: str, diretorio_arquivos: str, function_params: dict):
     """
@@ -87,6 +101,7 @@ def start(baixar, threads, diretorio_arquivos, database_url):
         {'pattern_name': 'socio', 'qt_column': 11, 'model': 'rfb.models.Socio'},
         {'pattern_name': 'empresa', 'qt_column': 7, 'model': 'rfb.models.Empresa'},
         {'pattern_name': 'estabelecimento', 'qt_column': 30, 'model': 'rfb.models.Estabelecimento'},
+        {'pattern_name': 'cidade', 'qt_column': 6, 'model': 'rfb.models.Cidade'}
     ]
 
     thread_name = 'cnpj_insert'

@@ -8,7 +8,7 @@ from .natureza import Natureza
 from .pais import Pais
 from .qualificacao import Qualificacao
 from .socio import Socio
-
+from .cidade import Cidade
 
 __all__ = [
     'Cnae',
@@ -20,5 +20,6 @@ __all__ = [
     'Natureza',
     'Pais',
     'Qualificacao',
-    'Socio'
+    'Socio',
+    'Cidade'
 ]
