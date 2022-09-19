@@ -7,26 +7,12 @@ from time import sleep
 from importlib import import_module
 from rfb.utils import download
 from rfb.utils.convert_database import ConvertDatabase
-import shutil
-import os
+from rfb.utils import extras
 
 log = logging.getLogger('rfb')
 log.setLevel(logging.INFO)
 logging.basicConfig(filename='rfb.log', format='%(levelname)s: %(name)s: %(asctime)s - %(message)s')
 
-
-# Source path
-source = "rfb/extras/"
- 
-# Destination path
-destination = "download/"
-files = os.listdir(source)
-
-shutil.copytree(source, destination)
-for fname in files:
-    # copying the files to the
-    # destination directory
-    shutil.copy2(os.path.join(source,fname), destination)
 
 def run_insert(database_url: str, diretorio_arquivos: str, function_params: dict):
     """
@@ -82,6 +68,7 @@ def start(baixar, threads, diretorio_arquivos, database_url):
 
     if baixar:
         download.start_download(diretorio_arquivos)
+        extras.move(diretorio_arquivos)
 
     # Verificando se é para rodar sem o uso de paralerismo
     # OBS: SQLite não suporta paralelismo
