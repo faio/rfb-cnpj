@@ -46,8 +46,11 @@ def read_file(path: str) -> list:
         content = file.open(name, mode='r')
 
         for line in content:
-            row = line.strip().decode(encoding=settings.ENCODING, errors='replace')
-            row = row.replace('\n', '').replace('";"', '##').replace('"', '').split('##')
+            rowLine = line.strip().decode(encoding=settings.ENCODING, errors='replace')
+            rowLine = rowLine.replace('\n', '')
+            row = rowLine.replace('";"', '||;').replace('"', '').split('||;')
+            if(len(row) <= 1 ):
+                row = rowLine.replace('"', '').split(';')
             yield row
 
 
