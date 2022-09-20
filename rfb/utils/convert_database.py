@@ -32,6 +32,7 @@ from rfb.utils import convert
 log = getLogger(__name__)
 
 
+
 def read_file(path: str) -> list:
     """
     Faz a leitura do arquivo ZIP sem descompactar o mesmo retornando a linha lida
@@ -46,7 +47,7 @@ def read_file(path: str) -> list:
 
         for line in content:
             row = line.strip().decode(encoding=settings.ENCODING, errors='replace')
-            row = row.replace('\n', '').replace('\0', '').replace('; ', '').replace('"', '').split(';')
+            row = row.replace('\n', '').replace('";"', '##').replace('"', '').split('##')
             yield row
 
 
