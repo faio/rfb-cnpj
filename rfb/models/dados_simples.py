@@ -10,17 +10,17 @@ class DadoSimples(Base):
     """
     __tablename__ = 'dados_simples'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
 
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (OITO PRIMEIROS
     # DÍGITOS DO CNPJ).
-    cnpj = Column(String(length=8))
+    cnpj = Column(String(length=8), index=True)
 
     # INDICADOR DA EXISTÊNCIA DA OPÇÃO PELO SIMPLES.
     #  S - SIM
     #  N - NÃO
     #  EM BRANCO – OUTROS
-    opcao_simples = Column(String(length=1))
+    opcao_simples = Column(String(length=1), index=True)
 
     # DATA DE OPÇÃO PELO SIMPLES
     data_opcao_simples = Column(Date)
@@ -32,7 +32,7 @@ class DadoSimples(Base):
     #  S - SIM
     #  N - NÃO
     #  EM BRANCO - OUTROS
-    opcao_mei = Column(String(length=1))
+    opcao_mei = Column(String(length=1), index=True)
 
     # DATA DE OPÇÃO PELO MEI
     data_opcao_mei = Column(Date)

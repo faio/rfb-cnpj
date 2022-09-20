@@ -8,7 +8,7 @@ class Pais(Base):
     __tablename__ = 'paises'
 
     # CÓDIGO DO PAÍS
-    codigo = Column(Integer, primary_key=True)
+    codigo = Column(Integer, primary_key=True, index=True)
 
     # NOME DO PAÍS
-    descricao = Column(String)
+    descricao = Column(String, index=True)

@@ -10,44 +10,44 @@ class Socio(Base):
     """
     __tablename__ = 'socios'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
 
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (CADASTRO
     # NACIONAL DA PESSOA JURÍDICA).
-    cnpj = Column(String(length=8))
+    cnpj = Column(String(length=8), index=True)
 
     # CÓDIGO DO IDENTIFICADOR DE SÓCIO
     # 1 – PESSOA JURÍDICA
     # 2 – PESSOA FÍSICA
     # 3 – ESTRANGEIRO
-    identificador_socio = Column(Integer)
+    identificador_socio = Column(Integer, index=True)
 
     # NOME DO SÓCIO PESSOA FÍSICA OU A RAZÃO SOCIAL E/OU NOME
     # EMPRESARIAL DA PESSOA JURÍDICA E/OU NOME DO
     # SÓCIO/RAZÃO SOCIAL DO SÓCIO ESTRANGEIRO
-    nome = Column(String)
+    nome = Column(String, index=True)
 
     # CPF OU CNPJ DO SÓCIO (SÓCIO ESTRANGEIRO NÃO TEM
     # ESTA INFORMAÇÃO).
-    cpf_cnpj = Column(String(length=14))
+    cpf_cnpj = Column(String(length=14), index=True)
 
     # CÓDIGO DA QUALIFICAÇÃO DO SÓCIO
-    qualificacao = Column(Integer)
+    qualificacao = Column(Integer, index=True)
 
     # DATA DE ENTRADA NA SOCIEDADE
     data_entrada_sociedade = Column(Date)
 
     # CÓDIGO PAÍS DO SÓCIO ESTRANGEIRO
-    codigo_pais = Column(Integer)
+    codigo_pais = Column(Integer, index=True)
 
     # NÚMERO DO CPF DO REPRESENTANTE LEGAL
-    cpf_representante_legal = Column(String(length=11))
+    cpf_representante_legal = Column(String(length=11), index=True)
 
     # NOME DO REPRESENTANTE LEGAL
-    nome_representante_legal = Column(String)
+    nome_representante_legal = Column(String, index=True)
 
     # CÓDIGO DA QUALIFICAÇÃO DO REPRESENTANTE LEGAL
-    qualificacao_representante_legal = Column(Integer)
+    qualificacao_representante_legal = Column(Integer, index=True)
 
     # CÓDIGO CORRESPONDENTE À FAIXA ETÁRIA DO SÓCIO
-    faixa_etaria = Column(Integer)
+    faixa_etaria = Column(Integer, index=True)

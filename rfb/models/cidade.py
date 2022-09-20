@@ -11,13 +11,13 @@ class Cidade(Base):
     __tablename__ = 'cidades'
 
     # NOME DA CIDADE
-    nome = Column(String)
+    nome = Column(String, index=True)
 
     # UF
-    uf = Column(String(length=2))
+    uf = Column(String(length=2), index=True)
 
     # ibge
-    ibge = Column(Integer)
+    ibge = Column(Integer, index=True)
 
     # latitude
     latitude = Column(Float)
@@ -26,4 +26,4 @@ class Cidade(Base):
     longitude = Column(Float)
 
     # cod_tom
-    cod_tom = Column(Integer, primary_key=True)
+    cod_tom = Column(Integer, primary_key=True, index=True)

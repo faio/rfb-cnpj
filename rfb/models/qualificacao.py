@@ -8,7 +8,7 @@ class Qualificacao(Base):
     __tablename__ = 'qualificacoes'
 
     # CÓDIGO DA QUALIFICAÇÃO DO SÓCIO
-    codigo = Column(Integer, primary_key=True)
+    codigo = Column(Integer, primary_key=True, index=True)
 
     # NOME DA QUALIFICAÇÃO DO SÓCIO
-    descricao = Column(String)
+    descricao = Column(String, index=True)
