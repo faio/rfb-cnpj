@@ -1,5 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Date, Integer
+from sqlalchemy import Column, ForeignKey, String, Date, Integer
+
+from rfb.models.empresa import Empresa
 
 Base = declarative_base()
 
@@ -14,7 +16,7 @@ class DadoSimples(Base):
 
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (OITO PRIMEIROS
     # DÍGITOS DO CNPJ).
-    cnpj = Column(String(length=8), index=True)
+    cnpj = Column(String(length=8),ForeignKey(Empresa.cnpj), index=True)
 
     # INDICADOR DA EXISTÊNCIA DA OPÇÃO PELO SIMPLES.
     #  S - SIM

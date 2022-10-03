@@ -3,13 +3,16 @@
 #        UTILITARIO PARA CONVERTER OS DADOS PARA O BANCO DE DADOS               |
 #                                                                               |
 # ------------------------------------------------------------------------------#
+
+from asyncio.log import logger
+from sqlite3 import IntegrityError
 import click
 from rfb import settings
 
 from typing import Optional
 from logging import getLogger
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, insert, null
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
@@ -32,7 +35,6 @@ from rfb.utils import convert
 log = getLogger(__name__)
 
 
-
 def read_file(path: str) -> list:
     """
     Faz a leitura do arquivo ZIP sem descompactar o mesmo retornando a linha lida
@@ -49,7 +51,7 @@ def read_file(path: str) -> list:
             rowLine = line.strip().decode(encoding=settings.ENCODING, errors='replace')
             rowLine = rowLine.replace('\n', '')
             row = rowLine.replace('";"', '||;').replace('"', '').split('||;')
-            if(len(row) <= 1 ):
+            if (len(row) <= 1):
                 row = rowLine.replace('"', '').split(';')
             yield row
 
@@ -116,36 +118,36 @@ class ConvertDatabase:
         uf = row[19] or None if len(row[19]) <= 2 else None
 
         return {
-                'cnpj': row[0] or None,
-                'cnpj_ordem': row[1] or None,
-                'cnpj_dv': row[2] or None,
-                'matriz_filial': convert.parse_int(row[3]),
-                'nome': row[4] or None,
-                'situacao': convert.parse_int(row[5]),
-                'data_situacao': convert.parse_date(row[6]),
-                'motivo_situacao': row[7] or None,
-                'cidade_exterior': row[8] or None,
-                'pais': convert.parse_int(row[9]),
-                'inicio_atividade': convert.parse_date(row[10]),
-                'cnae_fiscal': row[11] or None,
-                'cnae_secundario': row[12] or None,
-                'tipo_logradouro': row[13] or None,
-                'logradouro': row[14] or None,
-                'numero': row[15] or None,
-                'complemento': row[16] or None,
-                'bairro': row[17] or None,
-                'cep': cep,
-                'uf': uf,
-                'municipio': convert.parse_int(row[20]),
-                'ddd_1': convert.parse_int(row[21]),
-                'telefone_1': convert.only_number(row[22]),
-                'ddd_2': convert.parse_int(row[23]),
-                'telefone_2': convert.only_number(row[24]),
-                'ddd_fax': convert.parse_int(row[25]),
-                'numero_fax': convert.only_number(row[26]),
-                'email': row[27] or None,
-                'situacao_especial': row[28] or None,
-                'data_situacao_especial': convert.parse_date(row[29]),
+            'cnpj': row[0] or None,
+            'cnpj_ordem': row[1] or None,
+            'cnpj_dv': row[2] or None,
+            'matriz_filial': convert.parse_int(row[3]),
+            'nome': row[4] or None,
+            'situacao': convert.parse_int(row[5]),
+            'data_situacao': convert.parse_date(row[6]),
+            'motivo_situacao': row[7] or None,
+            'cidade_exterior': row[8] or None,
+            'pais': convert.parse_int(row[9]),
+            'inicio_atividade': convert.parse_date(row[10]),
+            'cnae_fiscal': row[11] or None,
+            'cnae_secundario': row[12] or None,
+            'tipo_logradouro': row[13] or None,
+            'logradouro': row[14] or None,
+            'numero': row[15] or None,
+            'complemento': row[16] or None,
+            'bairro': row[17] or None,
+            'cep': cep,
+            'uf': uf,
+            'municipio': convert.parse_int(row[20]),
+            'ddd_1': convert.parse_int(row[21]),
+            'telefone_1': convert.only_number(row[22]),
+            'ddd_2': convert.parse_int(row[23]),
+            'telefone_2': convert.only_number(row[24]),
+            'ddd_fax': convert.parse_int(row[25]),
+            'numero_fax': convert.only_number(row[26]),
+            'email': row[27] or None,
+            'situacao_especial': row[28] or None,
+            'data_situacao_especial': convert.parse_date(row[29]),
         }
 
     def parse_dado_simples(self, row: list) -> dict:
@@ -282,6 +284,40 @@ class ConvertDatabase:
         log.info(info)
         click.echo(info, nl=True)
 
+    def _filter(self, arr):
+        cache = []
+        j = 0
+        for item in arr:
+            if len(cache) == 0:
+                cache.append(item)
+                pass
+            else:
+                for i, itemcache in enumerate(cache):
+                    if itemcache['cnpj'] == item['cnpj']:
+                        if len(str(item)) > len(str(itemcache)):
+                            del cache[i]
+                            cache.append(item)
+                        j = 1
+                if j == 0:
+                    cache.append(item)
+        return list(cache)
+
+    def _commit(self, model: DeclarativeMeta, rows_cache: list):
+        try:
+            self.session.bulk_insert_mappings(model, rows_cache)
+            self.session.commit()
+        except:
+            print("bulk inserting rows failed, fallback to one by one")
+            rows = rows_cache
+            for item in rows:
+                try:
+                    self.session.execute(insert(model).values(**item))
+                    self.session.commit()
+                except:
+                    print("Error inserting item: %s", item)
+                    self.session.rollback()
+                    pass
+
     def _execute(self, file: PurePath, populate_name: str,
                  columns: int, model: DeclarativeMeta,
                  parse_function: Optional[str] = None):
@@ -321,11 +357,9 @@ class ConvertDatabase:
                 msg = f'[{populate_name}] Inserindo o registro { i + 1 } do arquivo {file}'
                 log.debug(msg)
                 click.echo(msg, nl=True)
-                self.session.bulk_insert_mappings(model, rows_cache)
-                self.session.commit()
+                self._commit(model, rows_cache)
                 rows_cache = []
 
         # Inserindo os resquícios de dados que podem ter ficado sem ser inseridos
         if rows_cache:
-            self.session.bulk_insert_mappings(model, rows_cache)
-            self.session.commit()
+            self._commit(model, rows_cache)

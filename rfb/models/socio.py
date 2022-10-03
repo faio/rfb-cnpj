@@ -1,5 +1,9 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Date, Integer
+from sqlalchemy import Column, ForeignKey, String, Date, Integer
+
+from rfb.models.empresa import Empresa
+from rfb.models.pais import Pais
+from rfb.models.qualificacao import Qualificacao
 
 Base = declarative_base()
 
@@ -14,7 +18,7 @@ class Socio(Base):
 
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (CADASTRO
     # NACIONAL DA PESSOA JURÍDICA).
-    cnpj = Column(String(length=8), index=True)
+    cnpj = Column(String(length=8),ForeignKey(Empresa.cnpj), index=True)
 
     # CÓDIGO DO IDENTIFICADOR DE SÓCIO
     # 1 – PESSOA JURÍDICA
@@ -32,13 +36,13 @@ class Socio(Base):
     cpf_cnpj = Column(String(length=14), index=True)
 
     # CÓDIGO DA QUALIFICAÇÃO DO SÓCIO
-    qualificacao = Column(Integer, index=True)
+    qualificacao = Column(Integer,ForeignKey(Qualificacao.codigo), index=True)
 
     # DATA DE ENTRADA NA SOCIEDADE
     data_entrada_sociedade = Column(Date)
 
     # CÓDIGO PAÍS DO SÓCIO ESTRANGEIRO
-    codigo_pais = Column(Integer, index=True)
+    codigo_pais = Column(Integer,ForeignKey(Pais.codigo), index=True)
 
     # NÚMERO DO CPF DO REPRESENTANTE LEGAL
     cpf_representante_legal = Column(String(length=11), index=True)
@@ -47,7 +51,7 @@ class Socio(Base):
     nome_representante_legal = Column(String, index=True)
 
     # CÓDIGO DA QUALIFICAÇÃO DO REPRESENTANTE LEGAL
-    qualificacao_representante_legal = Column(Integer, index=True)
+    qualificacao_representante_legal = Column(Integer,ForeignKey(Qualificacao.codigo), index=True)
 
     # CÓDIGO CORRESPONDENTE À FAIXA ETÁRIA DO SÓCIO
     faixa_etaria = Column(Integer, index=True)

@@ -1,5 +1,13 @@
+from operator import index
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, Date
+from sqlalchemy import Column, ForeignKey, String, Integer, Date
+from sqlalchemy.orm import relationship
+
+from rfb.models.cidade import Cidade
+from rfb.models.cnae import Cnae
+from rfb.models.empresa import Empresa
+from rfb.models.motivo_cadastral import MotivoCadastral
+from rfb.models.pais import Pais
 
 Base = declarative_base()
 
@@ -11,7 +19,8 @@ class Estabelecimento(Base):
 
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (OITO PRIMEIROS DÍGITOS
     # DO CNPJ).
-    cnpj = Column(String(length=8), index=True)
+    cnpj = Column(String(length=8),ForeignKey(Empresa.cnpj), index=True)
+    empresa = relationship(Empresa)
 
     # NÚMERO DO ESTABELECIMENTO DE INSCRIÇÃO NO CNPJ (DO
     # NONO ATÉ O DÉCIMO SEGUNDO DÍGITO DO CNPJ).
@@ -41,20 +50,20 @@ class Estabelecimento(Base):
     data_situacao = Column(Date)
 
     # CÓDIGO DO MOTIVO DA SITUAÇÃO CADASTRAL
-    motivo_situacao = Column(String, index=True)
+    motivo_situacao = Column(Integer, ForeignKey(MotivoCadastral.codigo), index=True)
 
     # NOME DA CIDADE NO EXTERIOR
     cidade_exterior = Column(String, index=True)
 
     # CÓDIGO DO PAIS
-    pais = Column(Integer, index=True)
+    pais = Column(Integer, ForeignKey(Pais.codigo), index=True)
 
     # DATA DE INÍCIO DA ATIVIDADE
     inicio_atividade = Column(Date)
 
     # CÓDIGO DA ATIVIDADE ECONÔMICA PRINCIPAL DO
     # ESTABELECIMENTO
-    cnae_fiscal = Column(String, index=True)
+    cnae_fiscal = Column(String,ForeignKey(Cnae.codigo), index=True)
 
     # CÓDIGO DA(S) ATIVIDADE(S) ECONÔMICA(S) SECUNDÁRIA(S) DO
     # ESTABELECIMENTO
@@ -87,7 +96,7 @@ class Estabelecimento(Base):
 
     # CÓDIGO DO MUNICÍPIO DE JURISDIÇÃO ONDE SE ENCONTRA O
     # ESTABELECIMENTO
-    municipio = Column(Integer, index=True)
+    municipio = Column(Integer, ForeignKey(Cidade.cod_tom), index=True)
 
     # CONTÉM O DDD 1
     ddd_1 = Column(String)
@@ -115,3 +124,4 @@ class Estabelecimento(Base):
 
     # DATA EM QUE A EMPRESA ENTROU EM SITUAÇÃO ESPECIAL
     data_situacao_especial = Column(Date)
+    

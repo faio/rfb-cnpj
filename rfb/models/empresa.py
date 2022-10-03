@@ -1,5 +1,8 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, Float
+from sqlalchemy import Column, ForeignKey, String, Integer, Float, null, nulls_first
+
+from rfb.models.natureza import Natureza
+from rfb.models.qualificacao import Qualificacao
 
 Base = declarative_base()
 
@@ -7,19 +10,17 @@ Base = declarative_base()
 class Empresa(Base):
     __tablename__ = 'empresas'
 
-    id = Column(Integer, primary_key=True, index=True)
-
     # NÚMERO BASE DE INSCRIÇÃO NO CNPJ (OITO PRIMEIROS DÍGITOS DO CNPJ).
-    cnpj = Column(String(length=8), index=True)
+    cnpj = Column(String(length=8), primary_key=True,  index=True)
 
     # NOME EMPRESARIAL DA PESSOA JURÍDICA
     razao = Column(String, index=True)
 
     # CÓDIGO DA NATUREZA JURÍDICA
-    natureza = Column(Integer, index=True)
+    natureza = Column(Integer, ForeignKey(Natureza.codigo), index=True)
 
     # QUALIFICAÇÃO DA PESSOA FÍSICA RESPONSÁVEL PELA EMPRESA
-    qualificacao_pf = Column(Integer, index=True)
+    qualificacao_pf = Column(Integer, ForeignKey(Qualificacao.codigo), index=True)
 
     # CAPITAL SOCIAL DA EMPRESA
     capital = Column(Float, index=True)
