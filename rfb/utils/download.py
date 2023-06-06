@@ -92,7 +92,7 @@ def _download(url: str, path: str = '', retry_count: int = 0) -> None:
     start = perf_counter()
 
     dir = os.path.join(path, file_name)
-    if path and not os.path.isdir(path):
+    if not os.path.isdir(path):
         os.mkdir(path)
 
     try:
@@ -143,11 +143,11 @@ def start_download(path='download'):
     msg = 'Iniciando o download dos arquivos'
     log.info(msg)
     click.echo(msg)
-
+    
     for i, file in enumerate(file_list):
         url = urljoin(URL_BASE_RFB, file)
         threading.Thread(target=_download, args=[url, path], name=thread_name).start()
-
+        
     dload_threads = [x.getName() for x in threading.enumerate() if thread_name == x.getName()]
 
     while len(dload_threads) >= max_threads:

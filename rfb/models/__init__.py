@@ -8,17 +8,18 @@ from .natureza import Natureza
 from .pais import Pais
 from .qualificacao import Qualificacao
 from .socio import Socio
-
+from .cidade import Cidade
 
 __all__ = [
-    'Cnae',
-    'DadoSimples',
-    'Empresa',
-    'Estabelecimento',
+    'Natureza',
+    'Qualificacao',
+    'Pais',
+    'Cidade',
     'MotivoCadastral',
     'Municipio',
-    'Natureza',
-    'Pais',
-    'Qualificacao',
-    'Socio'
+    'Cnae',
+    'Empresa',
+    'DadoSimples',
+    'Socio',
+    'Estabelecimento'
 ]

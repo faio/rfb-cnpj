@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 volumes:
   rfb-cnpj-dbdata:
@@ -11,8 +11,8 @@ services:
   postgresql:
     container_name: rfb-cnpj-dbdata
     image: postgres:12.5
-    restart: 'unless-stopped'
-    ports: 
+    restart: "unless-stopped"
+    ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
@@ -22,14 +22,14 @@ services:
       - rfb-cnpj-dbdata:/var/lib/postgresql/data
     networks:
       - rfb-cnpj
-  
+
   rfb-cnpj:
     container_name: rfb-cnpj
     build: .
     image: rfb-cnpj
     # Diretório onde serão baixados os arquivos da receita
     # Para facilitar, foi criado um diretório diretamente na raiz do projeto
-    # Caso queira usar outro diretório, apenas altere na linha abaixo 
+    # Caso queira usar outro diretório, apenas altere na linha abaixo
     volumes:
       - ./download:/usr/src/rfb-cnpj/download
     # Altere o comando abaixo passando os parametros que desejar.
@@ -41,5 +41,3 @@ services:
       - postgresql
     networks:
       - rfb-cnpj
-
-

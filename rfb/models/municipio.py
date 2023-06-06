@@ -8,7 +8,7 @@ class Municipio(Base):
     __tablename__ = 'municipios'
 
     # CÓDIGO DO MUNICÍPIO
-    codigo = Column(Integer, primary_key=True)
+    codigo = Column(Integer, primary_key=True, index=True)
 
     # NOME DO MUNICÍPIO
-    descricao = Column(String)
+    descricao = Column(String, index=True)

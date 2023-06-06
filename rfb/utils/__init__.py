@@ -3,14 +3,15 @@
 #  Nome | Nome usado na RFB
 # -------------------------------------
 NAMES_PATTERNS = {
-    'cnae': 'Cnaes',
-    'empresa': 'Empresas',
-    'estabelecimento': 'Estabelecimentos',
+    'natureza': 'Naturezas',
+    'qualificacao': 'Qualificacoes',
+    'pais': 'Paises',
+    'cidade': 'Cidades',
     'motivo_cadastral': 'Motivos',
     'municipio': 'Municipios',
-    'natureza': 'Naturezas',
-    'pais': 'Paises',
-    'qualificacao': 'Qualificacoes',
+    'cnae': 'Cnaes',
+    'empresa': 'Empresas',
     'dado_simples': 'Simples',
-    'socio': 'Socios'
+    'socio': 'Socios',
+    'estabelecimento': 'Estabelecimentos'
 }
