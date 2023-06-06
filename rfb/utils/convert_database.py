@@ -83,17 +83,17 @@ class ConvertDatabase:
         """
         Cria as tabelas da bases de dados
         """
+        Natureza().metadata.create_all(self.engine)
+        Qualificacao().metadata.create_all(self.engine)
+        Pais().metadata.create_all(self.engine)
+        Cidade().metadata.create_all(self.engine)
+        MotivoCadastral().metadata.create_all(self.engine)
+        Municipio().metadata.create_all(self.engine)
+        Cnae().metadata.create_all(self.engine)
         Empresa().metadata.create_all(self.engine)
-        Estabelecimento().metadata.create_all(self.engine)
         DadoSimples().metadata.create_all(self.engine)
         Socio().metadata.create_all(self.engine)
-        Cnae().metadata.create_all(self.engine)
-        Pais().metadata.create_all(self.engine)
-        Municipio().metadata.create_all(self.engine)
-        Qualificacao().metadata.create_all(self.engine)
-        Natureza().metadata.create_all(self.engine)
-        MotivoCadastral().metadata.create_all(self.engine)
-        Cidade().metadata.create_all(self.engine)
+        Estabelecimento().metadata.create_all(self.engine)
 
     def parse_empresa(self, row: list) -> dict:
         """ Faz o parse e tratamento da linha do arquivo em um dict compativo com models.Empresa """

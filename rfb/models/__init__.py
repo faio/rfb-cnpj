@@ -11,15 +11,15 @@ from .socio import Socio
 from .cidade import Cidade
 
 __all__ = [
-    'Cnae',
-    'DadoSimples',
-    'Empresa',
-    'Estabelecimento',
+    'Natureza',
+    'Qualificacao',
+    'Pais',
+    'Cidade',
     'MotivoCadastral',
     'Municipio',
-    'Natureza',
-    'Pais',
-    'Qualificacao',
+    'Cnae',
+    'Empresa',
+    'DadoSimples',
     'Socio',
-    'Cidade'
+    'Estabelecimento'
 ]

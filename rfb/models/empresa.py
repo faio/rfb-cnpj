@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, String, Integer, Float, null, nulls_first
+from sqlalchemy import Column, String, Integer, Float, null, nulls_first
 
 from rfb.models.natureza import Natureza
 from rfb.models.qualificacao import Qualificacao
@@ -17,10 +17,10 @@ class Empresa(Base):
     razao = Column(String, index=True)
 
     # CÓDIGO DA NATUREZA JURÍDICA
-    natureza = Column(Integer, ForeignKey(Natureza.codigo), index=True)
+    natureza = Column(Integer, index=True)
 
     # QUALIFICAÇÃO DA PESSOA FÍSICA RESPONSÁVEL PELA EMPRESA
-    qualificacao_pf = Column(Integer, ForeignKey(Qualificacao.codigo), index=True)
+    qualificacao_pf = Column(Integer, index=True)
 
     # CAPITAL SOCIAL DA EMPRESA
     capital = Column(Float, index=True)
